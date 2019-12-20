@@ -4,12 +4,12 @@ services:
     image: consul:1.6.2
     hostname: "consul"
     networks:
-      - vault
+      - host
     ports:
       - "8400:8400"
       - "8500:8500"
       - "8600:8600"
-    command: "agent -server -bootstrap-expect 1 -ui  -client 0.0.0.0"
+    command: "agent -server -bootstrap-expect 4 -ui  -client 0.0.0.0"
 
   vault:
     image: vault:1.3.0
@@ -18,22 +18,30 @@ services:
       - "9200:8200"
     volumes:
       - ./vault.json:/config.json
-    hostname: "vault2"
+    hostname: "vault"
     networks:
-      - vault
+      - host
     cap_add:
       - IPC_LOCK
-    command: "server -config=/config.json"
+    command: >-
+      server
+      -config=/config.json
 
   client:
     container_name: client
     build:
       context: .
       dockerfile: Dockerfile
+    cap_add:
+      - IPC_LOCK
+    networks:
+      - host
+    hostname: "client"
     environment:
-      - CONSUL_HTTP_ADDR=host.docker.internal:8500
-      - VAULT_ADDR=http://host.docker.internal:9200
-    command: tail -f /dev/null
+      - VAULT_TOKEN=root_token
+      - CONSUL_HTTP_ADDR=consul_ip:8500
+      - VAULT_ADDR=http://vault_ip:8200
+    command: "tail -f /dev/null"
 
 networks:
-  vault:
+  host:

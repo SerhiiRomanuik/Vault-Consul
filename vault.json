@@ -1,10 +1,16 @@
-ui = true
-listener "tcp" {
-  address          = "0.0.0.0:8200"
-  tls_disable      = "true"
-}
-
-storage "consul" {
-  address = "host.docker.internal:8500"
-  path    = "vault/"
+{
+   "ui":1,
+   "storage":{
+      "consul":{
+         "address":"http://consul_ip:8500",
+         "advertise_addr":"http://consul_ip",
+         "path":"vault-v2/"
+      }
+   },
+   "listener":{
+      "tcp":{
+         "address":"0.0.0.0:8200",
+         "tls_disable":1
+      }
+   }
 }

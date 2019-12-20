@@ -1,4 +1,4 @@
-FROM alpine:3.9
+FROM ubuntu:16.04
 
 ENV VAULT_VERSION=1.3.0 \
   CONSUL_VERSION=1.6.2
@@ -6,10 +6,9 @@ ENV VAULT_VERSION=1.3.0 \
 RUN apt-get update \
   && apt-get install -y \
   build-essential \
-  git \
   curl \
   wget \
-  vim \
+  nano \
   net-tools \
   iputils-ping \
   dnsutils \
