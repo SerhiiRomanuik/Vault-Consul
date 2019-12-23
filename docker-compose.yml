@@ -9,7 +9,7 @@ services:
       - "8400:8400"
       - "8500:8500"
       - "8600:8600"
-    command: "agent -server -bootstrap-expect 1 -ui  -client 0.0.0.0"
+    command: "agent -server -bootstrap-expect 1 -ui -client 0.0.0.0"
 
   vault:
     image: vault:1.3.0
