@@ -1,0 +1,15 @@
+{
+  "bootstrap_expect": 3,
+  "client_addr": "0.0.0.0",
+  "datacenter": "Consul-Cluster",
+  "data_dir": "/consul/config/data",
+  "leave_on_terminate": true,
+  "log_level": "INFO",
+  "rejoin_after_leave": true,
+  "server": true,
+  "start_join": [
+      "192.168.100.11",
+      "192.168.100.12",
+      "192.168.100.13"],
+  "ui": true
+}

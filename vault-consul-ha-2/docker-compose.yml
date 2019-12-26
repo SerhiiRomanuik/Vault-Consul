@@ -1,0 +1,106 @@
+version: '2'
+services:
+  consul1:
+    image: consul:1.6.2
+    container_name: consul_1
+    hostname: "consul1"
+    networks:
+      con_net:
+        ipv4_address: 192.168.100.11
+    volumes:
+      - ./consul1.json:/config.json
+    command: "agent -config-file /config.json"
+
+  consul2:
+    image: consul:1.6.2
+    container_name: consul_2
+    hostname: "consul2"
+    networks:
+      con_net:
+        ipv4_address: 192.168.100.12
+    volumes:
+      - ./consul2.json:/config.json
+    command: "agent -config-file /config.json"
+
+  consul3:
+    image: consul:1.6.2
+    container_name: consul_3
+    hostname: "consul3"
+    networks:
+      con_net:
+        ipv4_address: 192.168.100.13
+    volumes:
+      - ./consul3.json:/config.json
+    command: "agent -config-file /config.json"
+
+  vault1: 
+    image: vault:1.3.0
+    container_name: vault1
+    hostname: "vault1"
+    networks:
+      con_net:
+        ipv4_address: 192.168.100.21
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - ./vault1.hcl:/vault.hcl
+    command: server -config=/vault.hcl
+ 
+  vault2:
+    image: vault:1.3.0
+    container_name: vault2
+    hostname: "vault2"
+    cap_add:
+      - IPC_LOCK
+    networks:
+      con_net:
+        ipv4_address: 192.168.100.22
+    volumes:
+      - ./vault2.hcl:/config.hcl
+    command: server -config=/config.hcl
+  
+  client1:
+    container_name: v-c-1
+    hostname: "client1"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    cap_add:
+      - IPC_LOCK
+    networks:
+      con_net:
+        ipv4_address: 192.168.100.31
+    environment:
+      - CONSUL_HTTP_ADDR=192.168.100.11:8500
+      - VAULT_ADDR=http://192.168.100.21:8200
+    volumes:
+      - ./consulc1.json:/config.json
+    # command: "tail -f /dev/null" 
+    command: "consul agent -config-file=config.json"
+
+  client2:
+    image: docker_client1:latest
+    container_name: v-c-2
+    hostname: "client2"
+    cap_add:
+      - IPC_LOCK
+    networks:
+      con_net:
+        ipv4_address: 192.168.100.32
+    environment:
+      - CONSUL_HTTP_ADDR=192.168.100.13:8500
+      - VAULT_ADDR=http://192.168.100.22:8200
+    volumes:
+      - ./consulc2.json:/config.json
+    # command: "tail -f /dev/null"
+    command: "consul agent -config-file=config.json"
+
+networks:
+  con_net:
+    driver: bridge
+    ipam: 
+      driver: default
+      config: 
+        - subnet: 192.168.100.0/24
+          gateway: 192.168.100.1
+          

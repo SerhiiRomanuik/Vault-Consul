@@ -1,0 +1,16 @@
+{
+   "ui":1,
+   "storage":{
+      "consul":{
+         "address":"http://10.0.0.31:8500",
+         "advertise_addr":"http://10.0.0.31",
+         "path":"vault-v2/"
+      }
+   },
+   "listener":{
+      "tcp":{
+         "address":"0.0.0.0:8200",
+         "tls_disable":1
+      }
+   }
+}
